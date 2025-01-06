@@ -1,0 +1,67 @@
+import math
+
+def get_direction(current_xy, target_xy, current_heading):
+    """
+    计算目标相对于当前位置的角度和方位
+
+    Args:
+        current_x: 当前x坐标
+        current_y: 当前y坐标
+        target_x: 目标x坐标
+        target_y: 目标y坐标
+        current_heading: 当前朝向(0-360度，0度为正北，顺时针方向)
+
+    Returns:
+        angle: 需要转动的角度(-180到180度，负数表示逆时针转动)
+        direction: 目标的方位描述
+    """
+    current_x, current_y = current_xy
+    target_x, target_y = target_xy
+    # 计算目标相对于当前位置的角度
+    dx = target_x - current_x
+    dy = target_y - current_y
+
+    # 计算目标方位的角度（0度为正北，顺时针方向）
+    target_angle = math.degrees(math.atan2(dx, -dy))  # 使用-dy是因为y轴向下为正
+    if target_angle < 0:
+        target_angle += 360
+
+    # 计算需要转动的角度
+    angle_diff = target_angle - current_heading
+    if angle_diff > 180:
+        angle_diff -= 360
+    elif angle_diff < -180:
+        angle_diff += 360
+
+    # 判断方位
+    if abs(dx) < 1e-6 and abs(dy) < 1e-6:
+        direction = "重合"
+    else:
+        # 将坐标系分为8个区域
+        angle = target_angle
+        if 22.5 <= angle < 67.5:
+            direction = "右上"
+        elif 67.5 <= angle < 112.5:
+            direction = "右"
+        elif 112.5 <= angle < 157.5:
+            direction = "右下"
+        elif 157.5 <= angle < 202.5:
+            direction = "下"
+        elif 202.5 <= angle < 247.5:
+            direction = "左下"
+        elif 247.5 <= angle < 292.5:
+            direction = "左"
+        elif 292.5 <= angle < 337.5:
+            direction = "左上"
+        else:  # angle < 22.5 or angle >= 337.5
+            direction = "上"
+
+    return angle_diff, direction
+
+# 示例坐标和朝向
+current_coords = (0, 0)  # 当前坐标 (x, y)
+target_coords = (-100, 100)  # 目标坐标 (x, y)
+orientation = 0  # 朝向角度 (0 表示正上，顺时针方向)
+angle, direction = get_direction(current_coords, target_coords, orientation)
+
+print(f"需要转动: {angle:.2f} 度, 目标方向: {direction}")
