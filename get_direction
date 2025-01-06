@@ -58,6 +58,16 @@ def get_direction(current_xy, target_xy, current_heading):
 
     return angle_diff, direction
 
+
+def get_optimal_rotation(angle_diff):
+    # angle_diff 已经是最优角度(-180到180度)
+    if angle_diff > 0:
+        return "顺时针"
+    elif angle_diff < 0:
+        return "逆时针"
+    return "无需转动"
+
+
 # 示例坐标和朝向
 current_coords = (0, 0)  # 当前坐标 (x, y)
 target_coords = (-100, 100)  # 目标坐标 (x, y)
